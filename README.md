@@ -1,0 +1,1 @@
+This is a review project that simulate Tic Tac Toe game using vanillas Javascript, html and CSS
