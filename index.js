@@ -1,4 +1,6 @@
-// let square = createSquare();
+
+const gameboardUI = document.querySelector(".gameboard");
+
 let gameboard = [];
 for(let i = 0; i < 9; i++)
     gameboard.push(createSquare());
@@ -12,28 +14,50 @@ let currentPlayer = turn === "player 0"? player0 : player1;
 
 console.log(`Game start. Current player: ${currentPlayer.getName()}`);
 
-
-while(!squaresAllFilled()&&!checkWinner().hasWinner){
-    const input = prompt(`${currentPlayer.getName()} please enter the square to place your mark: `);
-    if(!gameboard[input].getMarkedStatus()){
-        gameboard[input].toggleMarkedStatus(true);
-        gameboard[input].setMarkedBy(currentPlayer.getName());
+gameboardUI.addEventListener("click",(event)=>{
+    const index = event.target.id;
+    if(!gameboard[index].getMarkedStatus()){
+        event.target.textContent = currentPlayer.getMark();
+        gameboard[index].toggleMarkedStatus(true);
+        gameboard[index].setMarkedBy(currentPlayer.getName());
         console.log(`current player is ${currentPlayer.getName()} and its mark is ${currentPlayer.getMark()}`)
-        gameboard[input].setMark(currentPlayer.getMark());
+        gameboard[index].setMark(currentPlayer.getMark());
         currentPlayer = currentPlayer.getName() === "Player 0"? player1 : player0;
-        console.log(`gameboard index ${input} has mark: ${gameboard[input].getMark()}`);
+        console.log(`gameboard index ${index} has mark: ${gameboard[index].getMark()}`);
         console.log(`Current player is now ${currentPlayer.getName()}`);
-
     } else{
         alert("the square you chose is taken.");
     }
-}
 
-if(squaresAllFilled()){
-    alert("All squared filled")
-} else if(checkWinner().hasWinner){
-   alert(`We has a winner: ${checkWinner(gameboard).winner}`) 
-}
+   if(checkWinner().hasWinner){
+       alert(`We has a winner: ${checkWinner(gameboard).winner}`) 
+    } else if(squaresAllFilled()){
+        alert("All squared filled")
+    } 
+    
+})
+
+// while(!squaresAllFilled()&&!checkWinner().hasWinner){
+//     const input = prompt(`${currentPlayer.getName()} please enter the square to place your mark: `);
+//     if(!gameboard[input].getMarkedStatus()){
+//         gameboard[input].toggleMarkedStatus(true);
+//         gameboard[input].setMarkedBy(currentPlayer.getName());
+//         console.log(`current player is ${currentPlayer.getName()} and its mark is ${currentPlayer.getMark()}`)
+//         gameboard[input].setMark(currentPlayer.getMark());
+//         currentPlayer = currentPlayer.getName() === "Player 0"? player1 : player0;
+//         console.log(`gameboard index ${input} has mark: ${gameboard[input].getMark()}`);
+//         console.log(`Current player is now ${currentPlayer.getName()}`);
+
+//     } else{
+//         alert("the square you chose is taken.");
+//     }
+// }
+
+// if(squaresAllFilled()){
+//     alert("All squared filled")
+// } else if(checkWinner().hasWinner){
+//    alert(`We has a winner: ${checkWinner(gameboard).winner}`) 
+// }
 
 
 function checkWinner(){
@@ -42,8 +66,8 @@ function checkWinner(){
     let hasWinner = false;
     let winner = null;
     for( const [index, square] of gameboard.entries()){
-        console.log(`now at square ${index}`);
-        console.log(`the square has been marked? ${square.getMarkedStatus()}`);
+        // console.log(`now at square ${index}`);
+        // console.log(`the square has been marked? ${square.getMarkedStatus()}`);
         if(square.getMarkedStatus()){
             for (const pattern of WINNING_PATTERNS) {
                 const [first, second, third] = pattern;
