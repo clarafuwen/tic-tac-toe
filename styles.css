@@ -95,8 +95,12 @@ select {
 body{
   height: 100vh;
   border: 1px red solid;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
 }
-.gameboard{
+.gameBoard{
   display: flex;
   flex-flow: column nowrap;
   width: 75vh;
