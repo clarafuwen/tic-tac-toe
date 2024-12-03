@@ -2,27 +2,46 @@
 const gameBoardUI = document.querySelector(".gameBoard");
 const announcement = document.querySelector(".announcement");
 const resetButton = document.querySelector(".reset");
+const startBUtton = document.querySelector(".start")
 const squares = document.querySelectorAll(".square");
+const player0Name = document.querySelector("#Player_0_name");
+const player1Name = document.querySelector("#Player_1_name");
+let player0, player1, currentPlayer,gameBoard = [];
 
-let gameBoard = [];
-init();
+
+player0Name.addEventListener("keypress", (event)=>{
+    if(event.key === "Enter")
+        player0Name.disabled = true;
+
+})
+player1Name.addEventListener("keypress", (event)=>{
+    if(event.key === "Enter")
+        player1Name.disabled = true;
+
+})
+
+startBUtton.addEventListener("click", ()=>{
+    init();
+    gameStart();
+    let p0Name = player0Name.value === ""? "Player 0" : player0Name.value;
+    let p1Name = player1Name.value === ""? "Player 1" : player1Name.value;
+    
+    player0 = createPlayer("X", p0Name);
+    player1 = createPlayer("O", p1Name);
+    currentPlayer = Math.floor(Math.random()*2) === 0? player0 : player1;
+    console.log(currentPlayer.getName());
+    // currentPlayer = turn === "Player 0"? player0 : player1;
+    announcement.textContent = (`Game start. Current player: ${currentPlayer.getName()}`);
+})
 
 
-const player0 = createPlayer("O", "Player 0");
-const player1 = createPlayer("X", "player 1");
-
-let turn = Math.floor(Math.random()*2) === 0? "player 0" : "player 1";
-let currentPlayer = turn === "player 0"? player0 : player1;
-
-announcement.textContent = (`Game start. Current player: ${currentPlayer.getName()}`);
 
 gameBoardUI.addEventListener("click", handleClick)
 
 resetButton.addEventListener("click", init);
 
-
 function handleClick(event){
-    
+    console.log(event.target.id);
     const index = event.target.id;
     if(!gameBoard[index].getMarkedStatus()){
         event.target.textContent = currentPlayer.getMark();
@@ -30,22 +49,20 @@ function handleClick(event){
         gameBoard[index].setMarkedBy(currentPlayer.getName());
         // console.log(`current player is ${currentPlayer.getName()} and its mark is ${currentPlayer.getMark()}`)
         gameBoard[index].setMark(currentPlayer.getMark());
-        currentPlayer = currentPlayer.getName() === "Player 0"? player1 : player0;
+        currentPlayer = currentPlayer.getName() === player0.getName()? player1 : player0;
         // console.log(`gameBoard index ${index} has mark: ${gameBoard[index].getMark()}`);
         // console.log(`Current player is now ${currentPlayer.getName()}`);
     } else{
-        alert("the square you chose is taken.");
+        announcement.textContent = ("the square you chose is taken.");
     }
     announcement.textContent = (`Current player: ${currentPlayer.getName()}`);
 
     if(checkWinner().hasWinner){
-        announcement.textContent = (`We has a winner: ${checkWinner(gameBoard).winner}`);
+        announcement.textContent = (`We have a winner: ${checkWinner(gameBoard).winner}`);
         gameBoardUI.removeEventListener("click", handleClick);
-        console.log("event listener removed")
      } else if(squaresAllFilled()){
          announcement.textContent=("All squared filled");
          gameBoardUI.removeEventListener("click",handleClick);
-         console.log("event listener removed")
      } 
 }
 
@@ -118,12 +135,21 @@ function init(){
     resetUI();
 }
 
+function gameStart(){
+    player0Name.disabled = true;
+    player1Name.disabled = true;
+}
+
 function resetGameBoardArray(){
     for(let i = 0; i < 9; i++)
         gameBoard.push(createSquare());
 }
+
 function resetUI(){
     squares.forEach((square) =>{
         square.textContent = "";
     })
+    announcement.textContent = "";
+    player0Name.disabled = false;
+    player1Name.disabled = false;
 }
